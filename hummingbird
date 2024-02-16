@@ -1,1 +1,80 @@
-echo "Initial commit test"
+#!/bin/bash
+
+# Function to open files in nvim
+open_in_nvim() {
+    nvim "$1" 
+}
+
+print_with_characters() {
+
+    characters="asdfghjkl;zxcvbnm,./1234567890" 
+    index=0  
+    count=0  
+
+    # Error handling check
+    if [ "$(command ls)" ]; then  # Check if any files/directories exist in the current location
+        for item in *; do
+            char=${characters:$index:1}
+    
+            # Color for filename only
+            if [ -d "$item" ]; then
+                file_color="\e[32m"  # Green
+            elif [ -f "$item" ]; then
+                file_color="\e[34m"  # Blue
+            else
+                file_color="\e[0m"   
+            fi
+    
+            if [[ $count -eq 5 ]]; then
+                echo "" 
+                count=0  
+            fi
+
+            # Print in two parts for separate coloring
+            echo -e "\e[37m$char) \e[0m${file_color}$item\e[0m" 
+    
+            index=$(( index + 1 ))
+            count=$(( count + 1 ))
+    
+        done
+    fi
+}
+
+clear
+pwd
+print_with_characters
+target_character=$(keyinput)
+
+while [[ $target_character != "q" ]]; do
+    if [[ $target_character == "e" ]]; then
+        cd ..
+    elif [[ $target_character == "w" ]]; then
+        cd ~
+    else
+        for (( i=0; i<${#characters}; i++ )); do
+            if [[ "${characters:$i:1}" == "$target_character" ]]; then
+                break  # Stop after finding the first occurrence
+            fi
+        done
+        i=i+1
+
+        selection=$(command ls | sed -n "${i}p")
+        if [[ -d "$selection" ]]; then
+            cd "$selection"
+            clear
+            ls -l
+        elif [[ -f "$selection" ]]; then
+            open_in_nvim "$selection"
+            break        # Exit the loop as opening nvim will generate new output
+        else
+            echo "Invalid selection. $selection"
+        fi
+    fi
+    clear
+    pwd
+    print_with_characters
+    target_character=$(keyinput)
+done
+
+clear
+ls -l
