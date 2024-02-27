@@ -5,6 +5,13 @@ open_in_nvim() {
     nvim "$1" 
 }
 
+print_ui(){
+    clear
+    pwd
+    print_with_characters
+    target_character=$(keyinput)
+}
+
 print_with_characters() {
 
     characters="asdfghjkl;zxcvbnm,./1234567890" 
@@ -37,13 +44,12 @@ print_with_characters() {
             count=$(( count + 1 ))
     
         done
+    else
+        echo "This directory is empty"
     fi
 }
 
-clear
-pwd
-print_with_characters
-target_character=$(keyinput)
+print_ui
 
 while [[ $target_character != "q" ]]; do
     if [[ $target_character == "e" ]]; then
@@ -70,10 +76,7 @@ while [[ $target_character != "q" ]]; do
             echo "Invalid selection. $selection"
         fi
     fi
-    clear
-    pwd
-    print_with_characters
-    target_character=$(keyinput)
+    print_ui
 done
 
 clear
