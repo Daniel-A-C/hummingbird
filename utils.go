@@ -37,6 +37,12 @@ func InitScreen() (sc tcell.Screen) {
 	return s
 }
 
+
+func EmitStrMid(s tcell.Screen, y int, style tcell.Style, str string) {
+	w, _ := s.Size()
+	EmitStr(s, w/2 - len(str)/2, y, style, str)
+}
+
 func EmitStr(s tcell.Screen, x, y int, style tcell.Style, str string) {
 	for _, c := range str {
 		var comb []rune

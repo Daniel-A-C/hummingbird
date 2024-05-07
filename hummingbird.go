@@ -8,18 +8,41 @@ import (
 	"github.com/gdamore/tcell/v2"
 )
 
-func RunHummingbird(s tcell.Screen) (string){ 
-	run := true
-	w, _ := s.Size()
-
-	EmitStr(s, w/2 - 5, 2, tcell.StyleDefault, "hummingbird")
+func PrintCurrentDir(s tcell.Screen) {
 
 	currentDir, err := os.Getwd()
-	if err != nil { EmitStr(s, 0, 0, tcell.StyleDefault, "wd error"); return "x"}
+	if err != nil { fmt.Println("Error reading directory:", err); return}
 
-	EmitStr(s, w/2 - 5, 3, tcell.StyleDefault, currentDir)
+	files, err := os.ReadDir(currentDir)
+	if err != nil { fmt.Println("Error reading directory:", err); return}
 
+	EmitStr(s, 0, 1, tcell.StyleDefault, currentDir)
+	skipOffset := -1
+	for i, file := range files {
+		if i % 5 == 0 { skipOffset += 1 }
+		EmitStrMid(s, i + skipOffset, tcell.StyleDefault, file.Name())
+	}
 	s.Show()
+}
+
+func RunHummingbird(s tcell.Screen) (string){ 
+    mapping := map[byte]int{
+        'a': 0,
+        's': 1,
+        'd': 2,
+        'f': 3,
+        'g': 4,
+        'h': 5,
+        'j': 6,
+        'k': 7,
+        'l': 8,
+        ';': 9,
+    }
+
+	run := true
+
+	EmitStr(s, 0, 0, tcell.StyleDefault, "hummingbird")
+	PrintCurrentDir(s)
 
 	for run {
 		if s.HasPendingEvent() {
@@ -28,6 +51,17 @@ func RunHummingbird(s tcell.Screen) (string){
 				if ev.Key() == tcell.KeyEscape || string(ev.Rune()) == "q" || ev.Key() == tcell.KeyCtrlC {
 					run = false
 				}
+				index, ok := mapping[byte(ev.Rune())]
+				if ok {
+					currentDir, err := os.Getwd()
+					if err != nil { fmt.Println("Error reading directory:", err); return "x"}
+
+					files, err := os.ReadDir(currentDir)
+					if err != nil { fmt.Println("Error reading directory:", err); return "x"}
+
+					EmitStr(s, 0, 4, tcell.StyleDefault, files[index].Name())
+					s.Show()
+				}
 			}
 		}
 
@@ -35,6 +69,7 @@ func RunHummingbird(s tcell.Screen) (string){
 	}
 
 	return "/Users/danielcarroll/code/hummingbird/testDir"
+	//return "x"
 }
 
 func main() {
@@ -45,24 +80,7 @@ func main() {
 
 	s.Fini()
 
-	//fmt.Print("x")
-	//fmt.Print("/Users/danielcarroll/code/hummingbird/testDir")
-
 /*
-	files, err := os.ReadDir(currentDir)
-	if err != nil {
-		fmt.Println("Error reading directory:", err)
-		return
-	}
-
-	fmt.Println("Contents of", currentDir)
-	for _, file := range files {
-		if file.IsDir() {
-			fmt.Println("[DIR]", file.Name())
-		} else {
-			fmt.Println(file.Name())
-		}
-	}
 
 	fmt.Print("\nEnter the number of the directory to change to: ")
 	var dirIndex int
