@@ -23,27 +23,27 @@ func (t *Timer) ElapsedTime() time.Duration {
 }
 
 func InitScreen() (sc tcell.Screen) {
-	s, e := tcell.NewScreen()
+	screen, e := tcell.NewScreen()
 	if e != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", e)
 		os.Exit(1)
 	}
-	if e := s.Init(); e != nil {
+	if e := screen.Init(); e != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", e)
 		os.Exit(1)
 	}
-	s.Clear()
+	screen.Clear()
 
-	return s
+	return screen
 }
 
 
-func EmitStrMid(s tcell.Screen, y int, style tcell.Style, str string) {
+func EmitStrMid(y int, style tcell.Style, str string) {
 	w, _ := s.Size()
-	EmitStr(s, w/2 - len(str)/2, y, style, str)
+	EmitStr(w/2 - len(str)/2, y, style, str)
 }
 
-func EmitStr(s tcell.Screen, x, y int, style tcell.Style, str string) {
+func EmitStr(x, y int, style tcell.Style, str string) {
 	for _, c := range str {
 		var comb []rune
 		w := runewidth.RuneWidth(c)
