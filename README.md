@@ -1,1 +1,1 @@
-A simple command line utility to navigate directories
+A command line file manager
