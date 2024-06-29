@@ -47,6 +47,7 @@ func PrintCurrentDir() {
 	s.Show()
 }
 
+	
 func filterHiddenFiles(files []os.DirEntry) []os.DirEntry {
     filteredFiles := []os.DirEntry{}
 

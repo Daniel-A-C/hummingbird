@@ -61,5 +61,8 @@ func respondToKeyPress(key string) {
 	} else if key == "u" { 
 		displayHints = !displayHints
 		PrintCurrentDir()
+	} else if key == "?" { 
+		RunSettingsMenu()
 	}
 }
+
