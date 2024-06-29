@@ -12,36 +12,30 @@ var s tcell.Screen
 var displayHiddenFiles = false
 var displayHints = true
 
+func main() {
+	s = InitScreen()
 
-func RunHummingbird() (string){ 
+	result := runHummingbird()
+	fmt.Print(result)
 
-	var inputMap = map[byte]int{
-		'a': 0, 's': 1, 'd': 2, 'f': 3, 'g': 4, 'h': 5, 'j': 6, 'k': 7, 'l': 8, ';': 9,
-		'z': 10, 'x': 11, 'c': 12, 'v': 13, 'b': 14, 'n': 15, 'm': 16, ',': 17, '.': 18, '/': 19,
-	}
+	s.Fini()
+}
+
+func runHummingbird() (string){ 
 
 	run := true
 	PrintCurrentDir()
 
 	for run {
-		if s.HasPendingEvent() {
-			switch ev := s.PollEvent().(type) {
-			case *tcell.EventKey:
-				index, ok := inputMap[byte(ev.Rune())] // If the input is in the map
-				if ok {
-					ChangeDir(index)
-				} else if string(ev.Rune()) == "e" {
-					GoUpDir()
-				} else if ev.Key() == tcell.KeyEscape || string(ev.Rune()) == "q" || ev.Key() == tcell.KeyCtrlC {
-					run = false
-				} else if string(ev.Rune()) == "y" {
-					displayHiddenFiles = !displayHiddenFiles
-					PrintCurrentDir()
-				} else if string(ev.Rune()) == "u" { 
-					displayHints = !displayHints
-					PrintCurrentDir()
-				}
+		for !s.HasPendingEvent() { }
+
+		switch ev := s.PollEvent().(type) {
+		case *tcell.EventKey:
+			if ev.Key() == tcell.KeyEscape || string(ev.Rune()) == "q" || ev.Key() == tcell.KeyCtrlC {
+				run = false
+				break
 			}
+			respondToKeyPress(string(ev.Rune()))
 		}
 	}
 
@@ -50,12 +44,22 @@ func RunHummingbird() (string){
 	return currentDir
 }
 
+func respondToKeyPress(key string) {
+	var inputMap = map[string]int{
+		"a": 0, "s": 1, "d": 2, "f": 3, "g": 4, "h": 5, "j": 6, "k": 7, "l": 8, ";": 9,
+		"z": 10, "x": 11, "c": 12, "v": 13, "b": 14, "n": 15, "m": 16, ",": 17, ".": 18, "/": 19,
+	}
 
-func main() {
-	s = InitScreen()
-
-	result := RunHummingbird()
-	fmt.Print(result)
-
-	s.Fini()
+	index, ok := inputMap[key]
+	if ok { // If the input is in the map
+		ChangeDir(index)
+	} else if key == "e" {
+		GoUpDir()
+	} else if key == "y" {
+		displayHiddenFiles = !displayHiddenFiles
+		PrintCurrentDir()
+	} else if key == "u" { 
+		displayHints = !displayHints
+		PrintCurrentDir()
+	}
 }
