@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"github.com/gdamore/tcell/v2"
+	"os"
 )
 
 var s tcell.Screen
@@ -20,13 +20,14 @@ func main() {
 	s.Fini()
 }
 
-func runHummingbird() (string){ 
+func runHummingbird() string {
 
 	run := true
 	PrintCurrentDir()
 
 	for run {
-		for !s.HasPendingEvent() { }
+		for !s.HasPendingEvent() {
+		}
 
 		switch ev := s.PollEvent().(type) {
 		case *tcell.EventKey:
@@ -39,7 +40,10 @@ func runHummingbird() (string){
 	}
 
 	currentDir, err := os.Getwd()
-	if err != nil { fmt.Println("Error reading directory:", err); return "x"}
+	if err != nil {
+		fmt.Println("Error reading directory:", err)
+		return "x"
+	}
 	return currentDir
 }
 
@@ -57,11 +61,10 @@ func respondToKeyPress(key string) {
 	} else if key == "y" {
 		displayHiddenFiles = !displayHiddenFiles
 		PrintCurrentDir()
-	} else if key == "u" { 
+	} else if key == "u" {
 		displayHints = !displayHints
 		PrintCurrentDir()
-	} else if key == "?" { 
+	} else if key == "?" {
 		RunSettingsMenu()
 	}
 }
-
