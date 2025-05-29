@@ -8,9 +8,8 @@ import (
 
 var s tcell.Screen
 
-// Eventually should belong in some sort of "settings" feature.
-var displayHiddenFiles = false
 var displayHints = true
+var displayHiddenFiles = false
 
 func main() {
 	s = InitScreen()

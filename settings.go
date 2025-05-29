@@ -26,8 +26,12 @@ func RunSettingsMenu() {
 
 func printSettingsMenu() {
 	s.Clear()
+	// settings := {"Display Hidden Contents", "Display Key Hints"}
 
-	EmitStrMid(2, tcell.StyleDefault, "settings")
+	_, h := s.Size()
+	EmitStrMid(h-1, tcell.StyleDefault, "settings")
+
+	// PrintSelectionKeyHints()
 
 	s.Show()
 }

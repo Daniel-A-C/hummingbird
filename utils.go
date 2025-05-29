@@ -57,3 +57,17 @@ func EmitStr(x, y int, style tcell.Style, str string) {
 	}
 }
 
+func PrintSelectionKeyHints(maxFilenameLen, numOfDirContents int) {
+	w, h := s.Size()
+
+	skipOffset := -1
+	if displayHints {
+		keys := "asdfghjkl;zxcvbnm,./"
+		for i := 0; i < numOfDirContents; i++ {
+			if i % 5 == 0 { skipOffset += 1 }
+			EmitStr(w/2 - maxFilenameLen/2 - 3, i + skipOffset, tcell.StyleDefault, string(keys[i]) + ")")
+			if i >= h-5 || i >= 19 { break }
+		}
+	}
+
+}

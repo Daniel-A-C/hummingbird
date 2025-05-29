@@ -22,7 +22,7 @@ func PrintCurrentDir() {
 
 	maxFilenameLen := printContents(contents)
 
-	printSelectionKeyHints(maxFilenameLen, contents)
+	PrintSelectionKeyHints(maxFilenameLen, len(contents))
 
 	s.Show()
 }
@@ -47,20 +47,6 @@ func printContents(contents []os.DirEntry)(int) {
 	return maxFilenameLen
 }
 
-func printSelectionKeyHints(maxFilenameLen int, contents []os.DirEntry) {
-	w, h := s.Size()
-
-	skipOffset := -1
-	if displayHints {
-		keys := "asdfghjkl;zxcvbnm,./"
-		for i := 0; i < len(contents); i++ {
-			if i % 5 == 0 { skipOffset += 1 }
-			EmitStr(w/2 - maxFilenameLen/2 - 3, i + skipOffset, tcell.StyleDefault, string(keys[i]) + ")")
-			if i >= h-5 || i >= 19 { break }
-		}
-	}
-
-}
 	
 func filterHiddenContents(contents []os.DirEntry) []os.DirEntry {
     filteredFiles := []os.DirEntry{}
