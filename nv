@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# Path to the flag file that Neovim will create
+FLAG_FILE="$HOME/.nvim_should_launch_hummingbird"
+
+# Ensure the flag file doesn't exist from a previous (possibly crashed) run
+rm -f "$FLAG_FILE"
+
+# Launch Neovim, passing all arguments given to this script
+# (e.g., if you run "nv file1.txt", it becomes "nvim file1.txt")
+nvim "$@"
+
+# After Neovim exits, check if the flag file was created
+if [ -f "$FLAG_FILE" ]; then
+    echo "Neovim exited with a flag. Launching Hummingbird..."
+
+    source h.sh
+
+    # Launch hummingbird in a new terminal window.
+    # Adjust the command based on your terminal emulator.
+    # For default macOS Terminal.app:
+    # open -a Terminal.app sh -c 'hummingbird; exit'
+
+    # For iTerm2:
+    # osascript -e 'tell application "iTerm2" to create window with default profile command "hummingbird"'
+
+    # For other terminals, you'd use their specific commands, e.g.:
+    # gnome-terminal -- hummingbird
+    # konsole -e hummingbird
+    # alacritty -e hummingbird
+
+    # Clean up the flag file
+    rm -f "$FLAG_FILE"
+else
+    # Optional: For debugging, you can see if Neovim exited normally
+    # echo "Neovim exited normally (no flag file found)."
+    : # Do nothing if no flag file
+fi
+
+# The script will exit with the last command's exit code (hummingbird or rm)
+# or Neovim's exit code if the flag wasn't set.
